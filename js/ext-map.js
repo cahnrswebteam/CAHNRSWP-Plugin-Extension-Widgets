@@ -1,7 +1,3 @@
-jQuery(document).ready(function($) {
-	cahnrsext.initialize();
-});
-
 var cahnrsIcons = [];
 var locType = new Array();
   
@@ -99,9 +95,9 @@ cahnrsext.createMark = function(i,latitude,longitude,name,type,typenum,contentSt
 		zindex: i
 	});
 	
-	var latlng = new google.maps.LatLng(46.728478, -117.16228);
+	var latlng = new google.maps.LatLng(47.3500973611119,-120.900198462495);
 		
-	contentString = contentString + '<a href="http://maps.google.com/maps?saddr=&daddr=' + markerLatLng + '"target="_blank">Directions</a>';
+	//contentString = contentString + '<a href="http://maps.google.com/maps?saddr=&daddr=' + markerLatLng + '"target="_blank">Directions</a>';
  
 	if (typenum>0) {
   	cahnrsloc[typenum][i].visible = false;
@@ -137,7 +133,7 @@ cahnrsext.cahnrsmap = function(type,typenum,wsheet) {
 	jQuery.getJSON('http://spreadsheets.google.com/feeds/list/0AlQK02JZCmjvdHl4Y1ZGWVBXR1BVX2czYzdNQmF5enc/' + wsheet +'/public/values?alt=json-in-script&callback=?', function(data) {
 		jQuery.each(data.feed.entry, function(i,entry) {
 			thecontent = '<div id="info">' +
-				'<a href="' + entry.gsx$website.$t + '" target="_blank">' + entry.gsx$name.$t + '</a><br />' +
+				'<strong><a href="' + entry.gsx$website.$t + '" target="_blank">' + entry.gsx$name.$t + '</a></strong><br />' +
 				entry.gsx$address.$t/* + '<br />' +
 				'<a href="mailto:' + entry.gsx$contact.$t +'">email</a><br />' +
 				entry.gsx$phone.$t +*/
@@ -150,25 +146,27 @@ cahnrsext.cahnrsmap = function(type,typenum,wsheet) {
 //Function that gets run when the document loads
 cahnrsext.initialize = function() {
 
-	var latlng = new google.maps.LatLng(47.318100, -120.988980);
-	var myOptions = {
-			zoom: 8,
-			center: latlng,
-			//mapTypeId: google.maps.MapTypeId.TERRAIN
-			mapTypeControlOptions: {
-      	mapTypeIds: []
-    	}, // here´s the array of controls
-    	disableDefaultUI: true, // a way to quickly hide all controls
-    	mapTypeControl: true,
-    	scaleControl: true,
-			scrollwheel: false,
-    	zoomControl: true,
-			mapTypeId: google.maps.MapTypeId.ROADMAP
-			//running_options : '{"mapTypeId":"ROADMAP","zoom":7,"backgroundColor":"#ffffff","disableDefaultUI":true,"draggable":false,"keyboardShortcuts":true,"mapMaker":false,"noClear":true,"mapTypeControl":true,"overviewMapControl":true,"panControl":true,"rotateControl":true,"scaleControl":true,"streetViewControl":true,"zoomControl":true,"scrollwheel":false}',
-	//fit_to_bound : 'WA, USA',
-	};
+	var map_options = {
+    center: new google.maps.LatLng(47.3500973611119,-120.900198462495),
+    zoom: 7,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+		mapTypeControlOptions: { mapTypeIds: [] },
+		backgroundColor: "#ffffff",
+		disableDefaultUI: true,
+		//draggable: false,
+		keyboardShortcuts: true,
+		mapMaker: false,
+		noClear: true,
+		mapTypeControl: true,
+		overviewMapControl: true,
+		panControl: true,
+		rotateControl: true,
+		scaleControl: true,
+		zoomControl: true,
+		scrollwheel: false,
+  };
 
-	map = new google.maps.Map(document.getElementById("cahnrs-map-canvas"), myOptions);
+	map = new google.maps.Map(document.getElementById('cahnrs-map-canvas'), map_options);
 
 	cahnrsext.cahnrsmap('Campuses',0,'oda');
 	cahnrsext.cahnrsmap('WSU Extension Offices',2,'od8');
@@ -177,3 +175,5 @@ cahnrsext.initialize = function() {
 	cahnrsext.cahnrsmap('Research Stations',4,'ocy');
 
 }
+
+google.maps.event.addDomListener( window, 'load', cahnrsext.initialize );
