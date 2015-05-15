@@ -1,0 +1,23 @@
+#cahnrs-map-canvas {
+	height: 470px;
+	margin: -2rem 0 1rem -2rem;
+	padding: 0px;
+	width: 100%;
+}
+#info {
+	width: 300px;
+}
+.desc div{
+	display: none;
+	visibility: hidden;
+}
+.desc:hover div{
+	background-color: #fff;
+	border: 1px solid #5e6a71;
+	display: block;
+	padding: 5px;
+	margin-left: 24px;
+	position: absolute;
+	visibility: visible;
+	width: 350px;
+}
