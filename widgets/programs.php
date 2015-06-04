@@ -25,7 +25,7 @@ class CAHNRS_Extension_Programs_Widget extends WP_Widget {
 
 		echo $args['before_widget'];
 
-		echo '<div class="program-list">';
+		echo '<div class="ext-program-wrapper">';
 		echo '<p class="desktop-help-text">' . $instance['help_text_d'] . '</p>';
 		echo '<p class="mobile-help-text">' . $instance['help_text_m'] . '</p>';
 
@@ -34,17 +34,18 @@ class CAHNRS_Extension_Programs_Widget extends WP_Widget {
 			$programs = get_bookmarks( 'category_name=' . $instance['category'] );
 
 			if ( $programs ) {
-				echo '<ul id="program-list">';
+				echo '<ul id="ext-programs">';
 				foreach( $programs as $program ) {
 					echo '<li><a href="' . esc_url( $program->link_url ) . '" data-desc="' . esc_attr( $program->link_notes ) . '" data-img="' . esc_attr( $program->link_image ) . '">' . esc_html( $program->link_name ) . '</a></li>';
 				}
 				echo '</ul>';
 			}
+			echo '<hr class="ext-preview-stopper" />';
 			
 		}
 
-		echo '</div><div class="program-preview">';
-		echo '<article id="program-preview">';
+		echo '</div><div class="ext-program-preview-wrapper">';
+		echo '<article id="ext-program-preview">';
 
 		$featured = get_bookmarks( 'category_name=' . $instance['category'] . '&limit=1&orderby=rand' );
 		if ( $featured ) {
@@ -52,8 +53,8 @@ class CAHNRS_Extension_Programs_Widget extends WP_Widget {
 				?>
 				<header class="article-title"><h4><a title="Go to the <?php echo esc_attr( $program->link_name );  ?> website" href="<?php echo esc_attr( $program->link_url ); ?>"><?php echo esc_html( $program->link_name ); ?> <span class="dashicons dashicons-external"></span></a></h4></header>
 				<div class="article-summary">
-        	<p><?php echo esc_html( $program->link_notes ); ?></p>
-					<img src="<?php echo esc_html( $program->link_image ); ?>" />
+        	<?php if ( $program->link_notes ) : ?><p><?php echo esc_html( $program->link_notes ); ?></p><?php endif; ?>
+          <?php if ( $program->link_image ) : ?><img src="<?php echo esc_html( $program->link_image ); ?>" /><?php endif; ?>
 				</div>
 				<?php
       }

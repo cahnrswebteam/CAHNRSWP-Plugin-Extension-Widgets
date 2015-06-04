@@ -1,4 +1,4 @@
-jQuery(document).ready(function($){
+jQuery(document).ready( function($) {
 
 	var resized = function() {
 
@@ -9,34 +9,51 @@ jQuery(document).ready(function($){
 	// Desktop functionality.
 	var desktop = function() {
 
-		$( '#program-list' ).find( '.program-details' ).remove();
+		// Remove any small-screen description.
+		$( '#ext-programs' ).find( '.ext-program-description' ).remove();
 
-		if ( $( '#program-preview' ).length == 0 ) {
-  		$( '.program-preview' ).append( '<article id="program-preview"></article>' );
+		// Add the target div for the large-screen description if there isn't one.
+		if ( $( '#ext-program-preview' ).length == 0 ) {
+  		$( '.ext-program-preview-wrapper' ).append( '<article id="ext-program-preview"></article>' );
 		}
 
-		// Program preview on hover.
-		$( '#program-list a' ).hover( function() {
+		// Show program description on hover.
+		$( '#ext-programs a' ).hover( function() {
 
 			var program = $(this);
 
-			$( '#program-preview' ).html(
-				'<header class="article-title"><h4><a title="Go to the ' + program.html() + ' website" href="' + program.attr( 'href' ) + '">' + program.html() + ' <span class="dashicons dashicons-external"></span></a></h4></header>' +
-				'<div class="article-summary"><p>' + program.data( 'desc' ) + '</p>' +
-				'<img src="' + program.data( 'img' ) + '" /></div>'
-			);
+			$( '#ext-program-preview' ).html( function() {
+  			var title     = '<header class="article-title"><h4><a title="Go to the ' + program.html() + ' website" href="' + program.attr( 'href' ) + '">' + program.html() + ' <span class="dashicons dashicons-external"></span></a></h4></header>',
+						descOpen  = '<div class="article-summary">',
+						desc      = ( program.data( 'desc' ).length !== 0 ) ? '<p>' + program.data( 'desc' ) + '</p>' : '',
+						descImage = ( program.data( 'img' ).length !== 0 ) ? '<img src="' + program.data( 'img' ) + '" />' : '',
+						descClose = '</div>';
+  			return title + descOpen + desc + descImage + descClose;
+			});
 
 		});
 
-		// Scroll preview pane.
+		// Make the description sticky.
 		$(function() {
 
-			var $preview = $( '#program-preview' ),
-					offset   = $preview.offset(),
-					topPadding = ( $(window).width() > 989 ) ? $( '.cahnrs-header-group ').outerHeight() : $( '.cahnrs-header-group ').outerHeight() + $( '.spine-header ').outerHeight();
+			var $preview   = $( '#ext-program-preview' ),
+					offset     = $preview.offset().top,
+					topPadding = $( '.cahnrs-header-group' ).position().top + $( '.cahnrs-header-group' ).outerHeight(true),
+					stopper    = $( '.ext-preview-stopper' ).position().top;
 
 			$(window).scroll( function() {
-				( $(window).scrollTop() > offset.top ) ? $preview.css( 'margin-top', $(window).scrollTop() - offset.top + topPadding ) : $preview.css( 'margin-top', 0 );
+
+				var scrollPos = $(window).scrollTop() + topPadding,
+						scrollMax = ( scrollPos - offset ) + $preview.height();
+
+        if ( scrollPos > offset ) {
+					if ( scrollMax < stopper ) {
+						$preview.css( 'margin-top', scrollPos - offset )
+					}
+        } else {
+					$preview.css( 'margin-top', 0 );
+        }
+
 			});
 
 		});
@@ -46,29 +63,33 @@ jQuery(document).ready(function($){
 	// Mobile functionality.
 	var mobile = function() {
 
-		$( '#program-preview' ).remove();
+		// Remove the large screen preview.
+		$( '#ext-program-preview' ).remove();
 
-		$( '#program-list' ).on( 'click', 'a', function(event) {
+		// Toggle program descriptions.
+		$( '#ext-programs' ).on( 'click', 'a', function(event) {
 
 			event.preventDefault();
 
-			var program = $(this)
-					details = $( '#program-list' ).find( '.program-details' );
+			// Remove any open description.
+			$( '#ext-programs' ).find( '.ext-program-description' ).remove();
 
-			details.remove();
+			var program = $(this),
+					descOpen  = '<span class="ext-program-description">',
+					progLink  = '<strong><a title="Go to the ' + program.html() + ' website" href="' + program.attr( 'href' ) + '">Visit site <span class="dashicons dashicons-external"></span></a></strong><br />',
+					desc      = ( program.data( 'desc' ).length !== 0 ) ? program.data( 'desc' ) + '<br />' : '',
+					descImage = ( program.data( 'img' ).length !== 0 ) ? '<img src="' + program.data( 'img' ) + '" />' : '',
+					descClose = '</span>';
 
-			program.parent('li').append( 
-				'<span class="program-details">' +
-				'<strong><a title="Go to the ' + program.html() + ' website" href="' + program.attr( 'href' ) + '">Visit site <span class="dashicons dashicons-external"></span></a></strong><br />' +
-				program.data( 'desc' ) + '<br />' +
-				'<img src="' + program.data( 'img' ) + '" /></span>'
-			);
+			// Display a description for the clicked program. 
+			program.parent('li').append( descOpen + progLink + desc + descImage + descClose );
 
 		});
 
 	}
 
 	resized();
+
 	$(window).resize(resized);
 
 });
