@@ -28,7 +28,7 @@ class CAHNRS_Extension_Map_Widget extends WP_Widget {
 		echo $args['before_widget'];
 
 		echo '<div id="cahnrs-map-canvas" class="recto unbound"></div>';
-		echo '<div id="loclist"></div>';
+		echo '<div id="map-locations-container"><div id="map-toggle-locations"></div><div id="map-locations"></div></div>';
 
 		echo $args['after_widget'];
 	}

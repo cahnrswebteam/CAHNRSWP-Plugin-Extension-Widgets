@@ -123,9 +123,9 @@ cahnrsext.cahnrsmap = function(type,typenum,wsheet) {
 	var typenum;		  
 
 	if (typenum>0) {
-		jQuery('#loclist').append('<input type="checkbox" id="toggle'+type+'" onClick="cahnrsext.toggleArrayLayer(cahnrsloc['+typenum+'])"> '+type + '<br>');
+		jQuery('#map-locations').append('<input type="checkbox" id="toggle'+type+'" onClick="cahnrsext.toggleArrayLayer(cahnrsloc['+typenum+'])"> '+type + '<br>');
 	} else {
-		jQuery('#loclist').append('<input type="checkbox" checked="checked" id="toggle'+type+'" onClick="cahnrsext.toggleArrayLayer(cahnrsloc['+typenum+'])"> '+type + '<br>');
+		jQuery('#map-locations-list').append('<input type="checkbox" checked="checked" id="toggle'+type+'" onClick="cahnrsext.toggleArrayLayer(cahnrsloc['+typenum+'])"> '+type + '<br>');
 	}
 
 	bounds = new google.maps.LatLngBounds();
@@ -177,3 +177,10 @@ cahnrsext.initialize = function() {
 }
 
 google.maps.event.addDomListener( window, 'load', cahnrsext.initialize );
+
+
+jQuery(document).ready(function($){
+	$( '#map-toggle-locations' ).on( 'click', function(event) {
+		$(this).parent('div').toggleClass('opened');
+	});
+});
