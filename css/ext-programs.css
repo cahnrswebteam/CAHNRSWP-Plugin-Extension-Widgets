@@ -7,7 +7,7 @@
 .ext-program-wrapper {
 	padding-right: 2rem;
 	position: relative;
-	width: 66.66%;
+	width: 66%;
 }
 .mobile-help-text {
 	display: none;
@@ -20,7 +20,7 @@
 	width: 100%;
 }
 .ext-program-preview-wrapper {
-	width: 33.33%;
+	width: 33%;
 }
 .ext-program-description {
 	display: block;
