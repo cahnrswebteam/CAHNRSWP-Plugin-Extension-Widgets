@@ -25,7 +25,7 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 	 */
 	public function wp_enqueue_scripts() {
 
-		global $post;
+		$post = get_post();
 
 		if ( is_singular() && has_shortcode( $post->post_content, 'fullscreenyoutubevideo' ) ) {
 			wp_enqueue_style( 'cahnrswp-fullscreen-video-style', plugins_url( 'css/fullscreen-video.css', __FILE__ ) );
@@ -33,10 +33,9 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 		}
 
 		if ( is_singular() && has_shortcode( $post->post_content, 'extensionmap' ) ) {
-			wp_enqueue_style( 'cahnrswp-ext-map-style', plugins_url( 'css/ext-map.css', __FILE__ ) );
-			wp_enqueue_script( 'google-map-script', 'http://maps.google.com/maps/api/js?sensor=false' );
-			wp_enqueue_script( 'cahnrswp-ext-map-script', plugins_url( 'js/ext-map.js', __FILE__ ), array( 'jquery' ) );
-			wp_localize_script( 'cahnrswp-ext-map-script', 'imagePath', plugins_url( 'map-markers/', __FILE__ ) );
+			wp_enqueue_style( 'jquery-ui-smoothness', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.min.css', array(), false );
+			wp_enqueue_style( 'wsu-home-map-style', 'https://beta.maps.wsu.edu/content/dis/css/map.view.styles.css', array(), false );
+			wp_enqueue_script( 'wsu-home-map', 'https://beta.maps.wsu.edu/embed/wsu-home', array( 'jquery' ), false, true );
 		}
 
 		if ( is_singular() && has_shortcode( $post->post_content, 'extensionprograms' ) ) {
@@ -64,20 +63,20 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 
 		$origin = strstr( home_url(), '.edu', true ) . '.edu';
 
-		if ( $youtube_id ) {
-
-			$html = '<div class="nocontent cahnrs-fullscreen-video" style="background-image: url(' . $poster_img . ')">';
-			$html .= '<iframe id="full-video" width="1280" height="720" data-aspect="0.5625" src="//www.youtube.com/embed/' . $youtube_id . '?playlist=' . $youtube_id . '&loop=1&rel=0&controls=0&showinfo=0&enablejsapi=1&origin=' . $origin . '" frameborder="0"></iframe>';
-			$html .= '</div>';
-
-			return $html;
-		
+		if ( empty( $youtube_id ) ) {
+			return '';
 		}
+
+		$content = '<div class="nocontent cahnrs-fullscreen-video" style="background-image: url(' . $poster_img . ')">';
+		$content .= '<iframe id="full-video" width="1280" height="720" data-aspect="0.5625" src="//www.youtube.com/embed/' . $youtube_id . '?playlist=' . $youtube_id . '&loop=1&rel=0&controls=0&showinfo=0&enablejsapi=1&origin=' . $origin . '" frameborder="0"></iframe>';
+		$content .= '</div>';
+
+		return $content;
 
 	}
 
 	/**
-	 * Extension Map shortcode handler.
+	 * Extension Map shortcode handler. (Shamelessly stolen from the WSU theme.)
 	 *
 	 * @param array $atts Shortcode attributes.
 	 *
@@ -85,10 +84,22 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 	 */
 	public function extension_map( $atts ) {
 
-		$html = '<div id="cahnrs-map-canvas" class="recto unbound"></div>';
-		$html .= '<div id="map-locations-container"><div id="map-toggle-locations"></div><div id="map-locations"></div></div>';
+		extract( shortcode_atts(
+			array(
+				'version' => '',
+				'scheme' => 'https',
+				'map' => '',
+			), $atts )
+		);
 
-		return $html;
+		$map_path = sanitize_title_with_dashes( $map );
+		if ( empty( $map_path ) ) {
+			return '';
+		}
+
+		$content = '<div id="map-embed-' . $map_path . '"></div>';
+		$content .= '<script>var map_view_scripts_block = true; var map_view_id = "map-embed-' . esc_js( $map_path ) .'";</script>';
+		return $content;
 
 	}
 
@@ -109,51 +120,47 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 			), $atts )
 		);
 
-		/* maybe ob_start();
-		?><?php
-		return ob_get_clean();*/
-
-		$html = '<div class="ext-program-wrapper">';
-		$html .= '<p class="desktop-help-text">' . $help_text_desktop . '</p>';
-		$html .= '<p class="mobile-help-text">' . $help_text_mobile . '</p>';
+		$content = '<div class="ext-program-wrapper">';
+		$content .= '<p class="desktop-help-text">' . $help_text_desktop . '</p>';
+		$content .= '<p class="mobile-help-text">' . $help_text_mobile . '</p>';
 
 		if ( $category ) {
 
 			$programs = get_bookmarks( 'category_name=' . $category );
 
 			if ( $programs ) {
-				$html .= '<ul id="ext-programs">';
+				$content .= '<ul id="ext-programs">';
 				foreach( $programs as $program ) {
-					$html .= '<li><a href="' . esc_url( $program->link_url ) . '" data-desc="' . esc_attr( $program->link_notes ) . '" data-img="' . esc_attr( $program->link_image ) . '">' . esc_html( $program->link_name ) . '</a></li>';
+					$content .= '<li><a href="' . esc_url( $program->link_url ) . '" data-desc="' . esc_attr( $program->link_notes ) . '" data-img="' . esc_attr( $program->link_image ) . '">' . esc_html( $program->link_name ) . '</a></li>';
 				}
-				$html .= '</ul>';
+				$content .= '</ul>';
 			}
-			$html .= '<hr class="ext-preview-stopper" />';
-			
+			$content .= '<hr class="ext-preview-stopper" />';
+
 		}
 
-		$html .= '</div><div class="ext-program-preview-wrapper">';
-		$html .= '<article id="ext-program-preview">';
+		$content .= '</div><div class="ext-program-preview-wrapper">';
+		$content .= '<article id="ext-program-preview">';
 
 		$featured = get_bookmarks( 'category_name=' . $category . '&limit=1&orderby=rand' );
 		if ( $featured ) {
 			foreach( $featured as $program ) {
-				$html .= '<header class="article-title"><h4><a title="Go to the ' . esc_attr( $program->link_name ) . ' website" href="' . esc_attr( $program->link_url ) . '">' . esc_html( $program->link_name ) . ' <span class="dashicons dashicons-external"></span></a></h4></header>';
-				$html .= '<div class="article-summary">';
+				$content .= '<header class="article-title"><h4><a title="Go to the ' . esc_attr( $program->link_name ) . ' website" href="' . esc_attr( $program->link_url ) . '">' . esc_html( $program->link_name ) . ' <span class="dashicons dashicons-external"></span></a></h4></header>';
+				$content .= '<div class="article-summary">';
         	if ( $program->link_notes ) {
-						$html .= '<p>' . esc_html( $program->link_notes ) . '</p>';
+						$content .= '<p>' . esc_html( $program->link_notes ) . '</p>';
 					}
           if ( $program->link_image ) {
-						$html .= '<img src="' . esc_html( $program->link_image ) . '" />';
+						$content .= '<img src="' . esc_html( $program->link_image ) . '" />';
 					}
-				$html .= '</div>';
+				$content .= '</div>';
       }
 		}
 
-		$html .= '</article>';
-		$html .= '</div>';
+		$content .= '</article>';
+		$content .= '</div>';
 
-		return $html;
+		return $content;
 
 	}
 
