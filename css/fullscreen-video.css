@@ -1,4 +1,6 @@
-/* The following rule should preferably be optional... */
+.has-featured-image .main-header {
+	height: 48px;
+}
 .sub-header,
 .main-header sub:not(.unset) {
 	display: none;
