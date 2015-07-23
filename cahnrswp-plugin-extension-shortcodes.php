@@ -21,7 +21,6 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 
 	/**
 	 * Enqueue scripts and styles for the front end.
-	 *
 	 */
 	public function wp_enqueue_scripts() {
 
@@ -46,11 +45,11 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 	}
 
 	/**
-	 * Fullscreen Youtube Video shortcode handler.
+	 * Display a Youtube video fullscreen.
 	 *
-	 * @param array $atts Shortcode attributes.
+	 * @param array $atts Attributes passed to the shortcode.
 	 *
-	 * @return string
+	 * @return string Content to display in place of the shortcode.
 	 */
 	public function fullscreen_youtube_video( $atts ) {
 
@@ -76,11 +75,11 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 	}
 
 	/**
-	 * Extension Map shortcode handler. (Shamelessly stolen from the WSU theme.)
+	 * Display a map from beta.map.wsu.edu. (Shamelessly stolen from the WSU theme.)
 	 *
-	 * @param array $atts Shortcode attributes.
+	 * @param array $atts Attributes passed to the shortcode.
 	 *
-	 * @return string
+	 * @return string Content to display in place of the shortcode.
 	 */
 	public function extension_map( $atts ) {
 
@@ -93,6 +92,7 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 		);
 
 		$map_path = sanitize_title_with_dashes( $map );
+
 		if ( empty( $map_path ) ) {
 			return '';
 		}
@@ -104,11 +104,11 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 	}
 
 	/**
-	 * Extension Programs shortcode handler.
+	 * Display a list of Extension Programs.
 	 *
-	 * @param array $atts Shortcode attributes.
+	 * @param array $atts Attributes passed to the shortcode.
 	 *
-	 * @return string
+	 * @return string Content to display in place of the shortcode.
 	 */
 	 public function extension_programs( $atts ) {
 
