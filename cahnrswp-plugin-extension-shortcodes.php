@@ -14,9 +14,9 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 	 */
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ), 21 );
-		add_shortcode( 'fullscreenyoutubevideo', array( $this, 'fullscreen_youtube_video' ) );
-		add_shortcode( 'extensionmap', array( $this, 'extension_map' ) );
-		add_shortcode( 'extensionprograms', array( $this, 'extension_programs' ) );
+		add_shortcode( 'fullscreen_youtube_video', array( $this, 'fullscreen_youtube_video' ) );
+		add_shortcode( 'extension_map', array( $this, 'extension_map' ) );
+		add_shortcode( 'extension_programs', array( $this, 'extension_programs' ) );
 	}
 
 	/**
@@ -26,18 +26,18 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 
 		$post = get_post();
 
-		if ( is_singular() && has_shortcode( $post->post_content, 'fullscreenyoutubevideo' ) ) {
+		if ( is_singular() && has_shortcode( $post->post_content, 'fullscreen_youtube_video' ) ) {
 			wp_enqueue_style( 'cahnrswp-fullscreen-video-style', plugins_url( 'css/fullscreen-video.css', __FILE__ ) );
 			wp_enqueue_script( 'cahnrswp-fullscreen-video-script', plugins_url( 'js/fullscreen-video.js', __FILE__ ), array( 'jquery' ) );
 		}
 
-		if ( is_singular() && has_shortcode( $post->post_content, 'extensionmap' ) ) {
+		if ( is_singular() && has_shortcode( $post->post_content, 'extension_map' ) ) {
 			wp_enqueue_style( 'jquery-ui-smoothness', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.min.css', array(), false );
 			wp_enqueue_style( 'wsu-home-map-style', 'https://beta.maps.wsu.edu/content/dis/css/map.view.styles.css', array(), false );
 			wp_enqueue_script( 'wsu-home-map', 'https://beta.maps.wsu.edu/embed/wsu-home', array( 'jquery' ), false, true );
 		}
 
-		if ( is_singular() && has_shortcode( $post->post_content, 'extensionprograms' ) ) {
+		if ( is_singular() && has_shortcode( $post->post_content, 'extension_programs' ) ) {
 			wp_enqueue_style( 'cahnrswp-ext-programs-style', plugins_url( 'css/ext-programs.css', __FILE__ ), array( 'dashicons' ) );
 			wp_enqueue_script( 'cahnrswp-ext-programs-script', plugins_url( 'js/ext-programs.js', __FILE__ ), array( 'jquery' ) );
 		}
@@ -67,6 +67,7 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 		}
 
 		$content = '<div class="nocontent cahnrs-fullscreen-video" style="background-image: url(' . $poster_img . ')">';
+		// Dimensions and aspect should be calculated from the video
 		$content .= '<iframe id="full-video" width="1280" height="720" data-aspect="0.5625" src="//www.youtube.com/embed/' . $youtube_id . '?playlist=' . $youtube_id . '&loop=1&rel=0&controls=0&showinfo=0&enablejsapi=1&origin=' . $origin . '" frameborder="0"></iframe>';
 		$content .= '</div>';
 
