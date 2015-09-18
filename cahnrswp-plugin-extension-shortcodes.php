@@ -13,10 +13,22 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 	 * Start the plugin and apply associated hooks.
 	 */
 	public function __construct() {
+		add_filter( 'body_class', array( $this, 'body_class' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ), 21 );
 		add_shortcode( 'fullscreen_youtube_video', array( $this, 'fullscreen_youtube_video' ) );
 		add_shortcode( 'extension_map', array( $this, 'extension_map' ) );
 		add_shortcode( 'extension_programs', array( $this, 'extension_programs' ) );
+	}
+
+	/**
+	 * Body classes.
+	 */
+	public function body_class( $classes ) {
+		$post = get_post();
+		if ( is_singular() && has_shortcode( $post->post_content, 'fullscreen_youtube_video' ) ) {
+			$classes[] = 'fullscreen-video';
+		}
+		return $classes;
 	}
 
 	/**
