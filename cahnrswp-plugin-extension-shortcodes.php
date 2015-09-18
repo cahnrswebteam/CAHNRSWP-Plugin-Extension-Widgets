@@ -17,7 +17,6 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 		add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ), 21 );
 		add_shortcode( 'fullscreen_youtube_video', array( $this, 'fullscreen_youtube_video' ) );
 		add_shortcode( 'extension_map', array( $this, 'extension_map' ) );
-		add_shortcode( 'extension_programs', array( $this, 'extension_programs' ) );
 	}
 
 	/**
@@ -47,11 +46,6 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 			wp_enqueue_style( 'jquery-ui-smoothness', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.min.css', array(), false );
 			wp_enqueue_style( 'wsu-home-map-style', 'https://beta.maps.wsu.edu/content/dis/css/map.view.styles.css', array(), false );
 			wp_enqueue_script( 'wsu-home-map', 'https://beta.maps.wsu.edu/embed/wsu-home', array( 'jquery' ), false, true );
-		}
-
-		if ( is_singular() && has_shortcode( $post->post_content, 'extension_programs' ) ) {
-			wp_enqueue_style( 'cahnrswp-ext-programs-style', plugins_url( 'css/ext-programs.css', __FILE__ ), array( 'dashicons' ) );
-			wp_enqueue_script( 'cahnrswp-ext-programs-script', plugins_url( 'js/ext-programs.js', __FILE__ ), array( 'jquery' ) );
 		}
 
 	}
@@ -111,67 +105,7 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 		}
 
 		$content = '<div id="map-embed-' . $map_path . '"></div>';
-		$content .= '<script>var map_view_scripts_block = true; var map_view_id = "map-embed-' . esc_js( $map_path ) .'";</script>';
-		return $content;
-
-	}
-
-	/**
-	 * Display a list of Extension Programs.
-	 *
-	 * @param array $atts Attributes passed to the shortcode.
-	 *
-	 * @return string Content to display in place of the shortcode.
-	 */
-	 public function extension_programs( $atts ) {
-
-		extract( shortcode_atts(
-			array(
-				'help_text_desktop' => '',
-				'help_text_mobile' => '',
-				'category' => '',
-			), $atts )
-		);
-
-		$content = '<div class="ext-program-wrapper">';
-		$content .= '<p class="desktop-help-text">' . $help_text_desktop . '</p>';
-		$content .= '<p class="mobile-help-text">' . $help_text_mobile . '</p>';
-
-		if ( $category ) {
-
-			$programs = get_bookmarks( 'category_name=' . $category );
-
-			if ( $programs ) {
-				$content .= '<ul id="ext-programs">';
-				foreach( $programs as $program ) {
-					$content .= '<li><a href="' . esc_url( $program->link_url ) . '" data-desc="' . esc_attr( $program->link_notes ) . '" data-img="' . esc_attr( $program->link_image ) . '">' . esc_html( $program->link_name ) . '</a></li>';
-				}
-				$content .= '</ul>';
-			}
-			$content .= '<hr class="ext-preview-stopper" />';
-
-		}
-
-		$content .= '</div><div class="ext-program-preview-wrapper">';
-		$content .= '<article id="ext-program-preview">';
-
-		$featured = get_bookmarks( 'category_name=' . $category . '&limit=1&orderby=rand' );
-		if ( $featured ) {
-			foreach( $featured as $program ) {
-				$content .= '<header class="article-title"><h4><a title="Go to the ' . esc_attr( $program->link_name ) . ' website" href="' . esc_attr( $program->link_url ) . '">' . esc_html( $program->link_name ) . ' <span class="dashicons dashicons-external"></span></a></h4></header>';
-				$content .= '<div class="article-summary">';
-        	if ( $program->link_notes ) {
-						$content .= '<p>' . esc_html( $program->link_notes ) . '</p>';
-					}
-          if ( $program->link_image ) {
-						$content .= '<img src="' . esc_html( $program->link_image ) . '" />';
-					}
-				$content .= '</div>';
-      }
-		}
-
-		$content .= '</article>';
-		$content .= '</div>';
+		$content .= '<div><script>var map_view_scripts_block = true; var map_view_id = "map-embed-' . esc_js( $map_path ) .'";</script></div>';
 
 		return $content;
 
