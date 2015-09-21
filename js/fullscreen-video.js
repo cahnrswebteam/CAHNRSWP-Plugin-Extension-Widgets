@@ -1,28 +1,9 @@
-(function($){
+var tag = document.createElement( 'script' ),
+		firstScriptTag = document.getElementsByTagName( 'script' )[0],
+		loop;
 
-	/** Fullscreen/responsive video **/
-	$(function() {
-		var video = $('#full-video');
-		video.removeAttr('height').removeAttr('width');
-		$(window).on( 'load resize', function() {
-			var newHeight = $(window).width() * video.attr('data-aspect');
-			if ( newHeight < $(window).height() ) {
-				video.width( $(window).height() / video.attr('data-aspect') ).height( $(window).height() );
-			} else {
-				video.width($(window).width()).height(newHeight);
-			}
-		});
-	});
-
-}(jQuery));
-
-/** YouTube iframe API stuff **/
-var tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-var loop;
+tag.src = 'https://www.youtube.com/iframe_api';
+firstScriptTag.parentNode.insertBefore( tag, firstScriptTag );
 
 function onYouTubeIframeAPIReady() {
 	loop = new YT.Player('full-video', {
@@ -34,6 +15,21 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerReady() {
 	loop.playVideo();
-	jQuery( '#full-video' ).delay(1000).fadeTo( 'slow', 1 );
 	loop.mute();
+	resize_video();
+	jQuery( '#full-video' ).removeAttr( 'height' ).removeAttr( 'width' ).delay(1000).fadeTo( 'slow', 1 );
+}
+
+window.onresize = resize_video;
+
+function resize_video() {
+	var loop_container = jQuery( '#full-video' ),
+			window_height = window.innerHeight,
+			window_width = window.innerWidth, 
+			new_height = window_width * 0.5625; /* Assuming 16x9 ratio */
+	if ( new_height < window_height ) {
+		loop_container.width( window_height / 0.5625 ).height( window_height );
+	} else {
+		loop_container.width( window_width ).height( new_height );
+	}
 }
