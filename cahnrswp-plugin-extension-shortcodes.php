@@ -39,7 +39,9 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 
 		if ( is_singular() && has_shortcode( $post->post_content, 'fullscreen_youtube_video' ) ) {
 			wp_enqueue_style( 'cahnrswp-fullscreen-video-style', plugins_url( 'css/fullscreen-video.css', __FILE__ ) );
-			wp_enqueue_script( 'cahnrswp-fullscreen-video-script', plugins_url( 'js/fullscreen-video.js', __FILE__ ), array( 'jquery' ) );
+			if ( ! wp_is_mobile() ) {
+				wp_enqueue_script( 'cahnrswp-fullscreen-video-script', plugins_url( 'js/fullscreen-video.js', __FILE__ ), array( 'jquery' ) );
+			}
 		}
 
 		if ( is_singular() && has_shortcode( $post->post_content, 'extension_map' ) ) {
@@ -66,15 +68,13 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 			), $atts )
 		);
 
-		$origin = strstr( home_url(), '.edu', true ) . '.edu';
-
-		if ( empty( $youtube_id ) ) {
-			return '';
-		}
-
+		$origin = urlencode( strstr( home_url(), '.edu', true ) . '.edu' );
+		
 		$content = '<div class="nocontent cahnrs-fullscreen-video" style="background-image: url(' . $poster_img . ')">';
-		// Dimensions and aspect should be calculated from the video
-		$content .= '<iframe id="full-video" width="1280" height="720" data-aspect="0.5625" src="//www.youtube.com/embed/' . $youtube_id . '?playlist=' . $youtube_id . '&loop=1&rel=0&controls=0&showinfo=0&enablejsapi=1&origin=' . $origin . '" frameborder="0"></iframe>';
+
+		if ( ! empty( $youtube_id ) && ! wp_is_mobile() ) {
+			$content .= '<iframe id="full-video" width="1280" height="720" src="//www.youtube.com/embed/' . $youtube_id . '?controls=0&enablejsapi=1&loop=1&modestbranding=1&playlist=' . $youtube_id . '&rel=0&showinfo=0&html5=1&origin=' . $origin . '" frameborder="0"></iframe>';
+		}
 		$content .= '</div>';
 
 		return $content;
