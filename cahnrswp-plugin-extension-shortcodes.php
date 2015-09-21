@@ -68,14 +68,18 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 			), $atts )
 		);
 
+		/*$id_array = explode( ',', $youtube_id );
+    $random = rand( 0, count( $id_array ) - 1 );
+    $youtube_id = $id_array[$random];*/
+
 		$origin = urlencode( strstr( home_url(), '.edu', true ) . '.edu' );
 		
 		$content = '<div class="nocontent cahnrs-fullscreen-video" style="background-image: url(' . $poster_img . ')">';
 
 		if ( ! empty( $youtube_id ) && ! wp_is_mobile() ) {
-			//$content .= '<div id="full-video" data-video-id="' . $youtube_id . '" data-aspect="0.5625"></div>';
 			$content .= '<iframe id="full-video" width="1280" height="720" src="//www.youtube.com/embed/' . $youtube_id . '?controls=0&enablejsapi=1&loop=1&modestbranding=1&playlist=' . $youtube_id . '&rel=0&showinfo=0&html5=1&origin=' . $origin . '" frameborder="0"></iframe>';
 		}
+
 		$content .= '</div>';
 
 		return $content;
