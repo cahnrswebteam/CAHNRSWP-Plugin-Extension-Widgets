@@ -3,6 +3,13 @@
 	height: 3rem;
 	z-index: 1;
 }
+.fullscreen-video .main-header .cahnrs-header-group.vellum-100,
+.fullscreen-video .main-header .cahnrs-header-group.vellum-100:not(.opaque) .quicklinks dl {
+	background: none;
+}
+.fullscreen-video .cahnrs-header-group.vellum-100:not(.opaque) .quicklinks {
+	padding-top: 0;
+}
 .sub-header,
 .main-header sub:not(.unset) {
 	display: none;

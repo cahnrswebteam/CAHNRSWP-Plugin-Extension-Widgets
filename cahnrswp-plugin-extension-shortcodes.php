@@ -77,7 +77,7 @@ class CAHNRSWP_Plugin_Extension_Shortcodes {
 		$content = '<div class="nocontent cahnrs-fullscreen-video" style="background-image: url(' . $poster_img . ')">';
 
 		if ( ! empty( $youtube_id ) && ! wp_is_mobile() ) {
-			$content .= '<iframe id="full-video" width="1280" height="720" src="//www.youtube.com/embed/' . $youtube_id . '?controls=0&enablejsapi=1&loop=1&modestbranding=1&playlist=' . $youtube_id . '&rel=0&showinfo=0&html5=1&origin=' . $origin . '" frameborder="0"></iframe>';
+			$content .= '<iframe id="full-video" width="1280" height="720" src="//www.youtube.com/embed/' . $youtube_id . '?controls=0&enablejsapi=1&loop=1&modestbranding=1&playlist=' . $youtube_id . '&rel=0&showinfo=0&html5=1&origin=' . $origin . '&wmode=transparent" frameborder="0"></iframe>';
 		}
 
 		$content .= '</div>';
