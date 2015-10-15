@@ -3,8 +3,8 @@
 	height: 3rem;
 	z-index: 1;
 }
-.fullscreen-video .main-header .cahnrs-header-group.vellum-100,
-.fullscreen-video .main-header .cahnrs-header-group.vellum-100:not(.opaque) .quicklinks dl {
+.fullscreen-video .main-header .vellum-100:not(.opaque),
+.fullscreen-video .main-header .vellum-100:not(.opaque) .quicklinks dl {
 	background: none;
 }
 .fullscreen-video .cahnrs-header-group.vellum-100:not(.opaque) .quicklinks {
@@ -64,11 +64,7 @@
 }
 
 @media screen and (min-width:990px) {
-	.fullscreen-video:not(.spine-crimson) #binder:before {
-		content: normal;
-		height: auto;
-		position: static;
-		visibility: hidden;
-		width: 0;
-		z-index: auto;
+	.fullscreen-video #spine:not(.crimson) #glue:before {
+		opacity: 0.95;
 	}
+}
